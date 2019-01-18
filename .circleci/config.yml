@@ -7,7 +7,7 @@ jobs:
     # from https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_install_cli_standalone.htm
     # and https://developer.salesforce.com/media/salesforce-cli/manifest.json
     - DX_CLI_URL: https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
-    - PACKAGENAME: "0Ho1U000000CaUaSAK"
+    - PACKAGENAME: "0Ho0N000000CaT8SAK"
     - TESTLEVEL: RunLocalTests
     steps: 
       - checkout
