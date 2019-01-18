@@ -78,7 +78,7 @@ jobs:
             #Run Unit Tests on Scratch Org
             sfdx force:apex:test:run --targetusername installorg --wait 10 --resultformat tap --codecoverage --testlevel $TESTLEVEL
       - run:
-          name: .
+          name: Delete Scratch org
           command: |
             #Delete Scratch Org
             sfdx force:org:delete --targetusername installorg --noprompt
