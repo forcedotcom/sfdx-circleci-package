@@ -1,0 +1,7 @@
+{
+    "orgName": "Circle CI Package Example",
+    "edition": "Developer",
+    "orgPreferences" : {
+        "enabled": ["S1DesktopEnabled"]
+    }
+}
