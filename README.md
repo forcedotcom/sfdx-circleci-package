@@ -3,7 +3,7 @@
 
 Coming Soon --- For a fully guided walk through of setting up and configuring this sample, see the [Continuous Integration Using Salesforce DX](https://trailhead.salesforce.com/modules/sfdx_travis_ci) Trailhead module.
 
-This repository shows one way you can successfully setup Salesforce DX to create new package versions with Travis CI. We make a few assumptions in this README:
+This repository shows one way you can successfully setup Salesforce DX to create new package versions with Circle CI. We make a few assumptions in this README:
 
 - You know how to get your Github repository setup with Circle CI. (Here's their [Getting Started guide](https://circleci.com/docs/2.0/).)
 - You have properly setup JWT-Based Authorization Flow (i.e. headless). I recommend using [these steps for generating your Self-Signed SSL Certificate](https://devcenter.heroku.com/articles/ssl-certificate-self). 
@@ -42,13 +42,13 @@ openssl enc -nosalt -aes-256-cbc -in assets/server.key -out assets/server.key.en
  
 - Store the `key`, and `iv` as protected environment variables in the Circleci UI. These valus are considered *secret* so please treat them as such.
 
-6) From you JWT-Based connected app on Salesforce, retrieve the generated `Consumer Key` and store in a Circleci environment variable named `CONSUMER_KEY` using the Circleci UI.
+5) From you JWT-Based connected app on Salesforce, retrieve the generated `Consumer Key`. This should be the from your DevHub org.
 
-7) Store the user name that you use to access your target org in a Circleci environment variable named `USER_NAME` using the Circleci UI. Note that this username is the username that you use to login into your target org.
+6) Set your `Consumer Key` in a Circleci environment variable named `CONSUMER_KEY` using the Circleci UI. Set your `Username` in a Circleci environment variable named `USER_NAME` using the Circleci UI.  Note that this username is the username that you use to access your Dev Hub.
 
-8) Store the `key` and `iv` values used above in Circleci environment variables named `DECRYPTION_KEY` and `DECRYPTION_IV` respectively.  When finished setting environment variables you environment variables setup screen should look like the one below.
+7) Store the `key` and `iv` values used above in Circleci environment variables named `DECRYPTION_KEY` and `DECRYPTION_IV` respectively.  When finished setting environment variables you environment variables setup screen should look like the one below.
 
-![alt text](assets/images/Circleci-variables.png)
+![alt text](assets/images/screenshot-194.png)
 
 9) IMPORTANT! Remove your `server.key`: `rm assets/server.key`, you should never store keys or certificates in a public place.
 
