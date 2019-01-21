@@ -42,7 +42,7 @@ openssl enc -nosalt -aes-256-cbc -in assets/server.key -out assets/server.key.en
  
 - Store the `key`, and `iv` as protected environment variables in the Circleci UI. These valus are considered *secret* so please treat them as such.
 
-5) From you JWT-Based connected app on Salesforce, retrieve the generated `Consumer Key`. This should be the from your DevHub org.
+5) From you JWT-Based connected app on Salesforce, retrieve the generated `Consumer Key`. This should be from your DevHub org.
 
 6) Set your `Consumer Key` in a Circleci environment variable named `HUB_CONSUMER_KEY` using the Circleci UI. Set your `Username` in a Circleci environment variable named `HUB_USER_NAME` using the Circleci UI.  Note that this username is the username that you use to access your Dev Hub.
 
