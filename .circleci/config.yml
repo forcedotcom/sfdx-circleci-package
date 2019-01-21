@@ -34,7 +34,7 @@ jobs:
           command: |
             sfdx force --help
             #Authorize DevHub
-            sfdx force:auth:jwt:grant --clientid $HUB_CONSUMER_KEY --jwtkeyfile assets/server.key --username $HUB_SFDX_USER --setdefaultdevhubusername -a HubOrg
+            sfdx force:auth:jwt:grant --clientid $CONSUMER_KEY --jwtkeyfile assets/server.key --username $USER_NAME --setdefaultdevhubusername -a HubOrg
             #Create Scratch Org
             sfdx force:org:create -s -f config/project-scratch-def.json --setdefaultusername --setalias circle_build_$CIRCLE_BUILD_NUM --wait 10 --durationdays 1
             #Push Source To Scratch Org
