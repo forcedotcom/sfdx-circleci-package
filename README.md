@@ -17,11 +17,14 @@ If any any of these assumptions aren't true, the following steps won't work.
 
 3) Make sure you have the Salesforce CLI installed. Check by running `sfdx force --help` and confirm you see the command output. If you don't have it installed you can download and install it from [here](https://developer.salesforce.com/tools/sfdxcli).
 
-4) Confirm you can perform a JWT-based auth: `sfdx force:auth:jwt:grant --clientid <your_consumer_key> --jwtkeyfile server.key --username <your_username> --setdefaultdevhubusername`
+4) Setup a JWT-based auth flow for the target orgs that you want to deploy to.  This step will create a server.key file that will be used in subsequent steps.
+(https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_jwt_flow.htm)
+
+5) Confirm you can perform a JWT-based auth: `sfdx force:auth:jwt:grant --clientid <your_consumer_key> --jwtkeyfile server.key --username <your_username> --setdefaultdevhubusername`
 
    **Note:** For more info on setting up JWT-based auth see [Authorize an Org Using the JWT-Based Flow](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_jwt_flow.htm) in the [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev).
 
-5) Encrypt and store the server.key generated above using the instructions below.
+6) Encrypt and store the server.key generated above using the instructions below.  IMPORTANT!  You will want to ensure that you do not store the server.key within the project.
 > "Circle does a nice job of allowing you to set environment variables inside the UI in a protected way." (attribution to [Kevin O'Hara](https://github.com/kevinohara80))
 
 - First, we will generate a key and initializtion vector (iv) to encrypt your server.key file locally.  The key and iv will be used by Circleci to decrypt your server key in the build environment.
@@ -39,28 +42,27 @@ $ openssl enc -aes-256-cbc -k <passphrase here> -P -md sha1 -nosalt
 ```bash
 openssl enc -nosalt -aes-256-cbc -in assets/server.key -out assets/server.key.enc -base64 -K <key from above> -iv <iv from above>
 ```
- 
+ This should have replaced the existing server.key.enc with your encrypted version.
+
 - Store the `key`, and `iv` as protected environment variables in the Circleci UI. These valus are considered *secret* so please treat them as such.
 
-5) From you JWT-Based connected app on Salesforce, retrieve the generated `Consumer Key`. This should be from your DevHub org.
+7) From you JWT-Based connected app on Salesforce, retrieve the generated `Consumer Key`. This should be from your DevHub org.
 
-6) Set your `Consumer Key` in a Circleci environment variable named `HUB_CONSUMER_KEY` using the Circleci UI. Set your `Username` in a Circleci environment variable named `HUB_USER_NAME` using the Circleci UI.  Note that this username is the username that you use to access your Dev Hub.
+8) Set your `Consumer Key` in a Circleci environment variable named `HUB_CONSUMER_KEY` using the Circleci UI. Set your `Username` in a Circleci environment variable named `HUB_USER_NAME` using the Circleci UI.  Note that this username is the username that you use to access your Dev Hub.
 
-7) Store the `key` and `iv` values used above in Circleci environment variables named `DECRYPTION_KEY` and `DECRYPTION_IV` respectively.  When finished setting environment variables you environment variables setup screen should look like the one below.
+9) Store the `key` and `iv` values used above in Circleci environment variables named `DECRYPTION_KEY` and `DECRYPTION_IV` respectively.  When finished setting environment variables you environment variables setup screen should look like the one below.
 
 ![alt text](assets/images/Circleci-variables.png)
-
-9) IMPORTANT! Remove your `server.key`: `rm assets/server.key`, you should never store keys or certificates in a public place.
 
 10) Copy all the contents of package-sfdx-project.json into sfdx-project.json and save.
 
 11) Create the sample package running this command `sfdx force:package:create --path force-app/main/default/ --name "CircleCI" --description "Circle CI Package Example" --packagetype Unlocked`
 
-13) Create the first package version `sfdx force:package:version:create --package "CircleCi" --installationkeybypass --wait 10 --json --targetdevhubusername HubOrg`
+12) Create the first package version `sfdx force:package:version:create --package "CircleCi" --installationkeybypass --wait 10 --json --targetdevhubusername HubOrg`
 
-14) In the config.yml Update the value in the `PACKAGENAME` variable to be Package Id in your sfdx-project.json file.  This id will start with 0Ho.
+13) In the config.yml Update the value in the `PACKAGENAME` variable to be Package Id in your sfdx-project.json file.  This id will start with 0Ho.
 
-15) Commit the updated sfdx-project.json and config.yml files.
+14) Commit the updated `sfdx-project.json`,`config.yml`, and `server.key.enc` files.
 
 And you should be ready to go! Now when you commit and push a change, your change will kick off a Circle CI build.
 
