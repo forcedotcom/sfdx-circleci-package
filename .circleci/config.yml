@@ -33,26 +33,26 @@ jobs:
           name: Create Scratch Org
           command: |
             sfdx force --help
-            #Authorize DevHub
+            #Authorize Dev Hub
             sfdx force:auth:jwt:grant --clientid $HUB_CONSUMER_KEY --jwtkeyfile assets/server.key --username $HUB_USER_NAME --setdefaultdevhubusername -a HubOrg
-            #Create Scratch Org
+            #Create scratch org
             sfdx force:org:create -s -f config/project-scratch-def.json --setdefaultusername --setalias circle_build_$CIRCLE_BUILD_NUM --wait 10 --durationdays 1
-            #Push Source To Scratch Org
+            #Push source to scratch org
             sfdx force:source:push --targetusername circle_build_$CIRCLE_BUILD_NUM
       - run:
           name: Run Apex Tests
           command: |
-            #Run Unit Tests on Scratch Org
+            #Run unit tests on scratch org
             sfdx force:apex:test:run --targetusername circle_build_$CIRCLE_BUILD_NUM --wait 10 --resultformat tap --codecoverage --testlevel $TESTLEVEL
       - run:
           name: Delete Scratch Org
           command: |
-            #Delete Scratch Org
+            #Delete scratch org
             sfdx force:org:delete --targetusername  circle_build_$CIRCLE_BUILD_NUM --noprompt
       - run:
           name: Create Package Version
           command: |
-            #Create Package Version
+            #Create package version
             PACKAGEVERSION="$(sfdx force:package:version:create --package $PACKAGENAME --installationkeybypass --wait 10 --json --targetdevhubusername HubOrg | jq '.result.SubscriberPackageVersionId' | tr -d '"')"
             echo 'PackageVersionId - ' ${PACKAGEVERSION}
             # Store PackageVersionId to be used in future step
@@ -63,7 +63,7 @@ jobs:
       - run:
           name: Create Scratch Org for Installing Package Version
           command: |
-            #Create Scratch Org
+            #Create scratch org
             sfdx force:org:create --targetdevhubusername HubOrg --setdefaultusername --definitionfile config/project-scratch-def.json --setalias installorg --wait 10 --durationdays 1
             sfdx force:org:display --targetusername installorg
       - run:
@@ -71,15 +71,15 @@ jobs:
           command: |
             #Get PackageVersionId
             PackageVersionId=$(</tmp/packageversion.txt)
-            #Install package in Scratch Org
+            #Install package in scratch org
             sfdx force:package:install --package $PackageVersionId --wait 10 --targetusername installorg
       - run:
           name: Run Unit Tests on Scratch Org
           command: |
-            #Run Unit Tests on Scratch Org
+            #Run unit tests on scratch org
             sfdx force:apex:test:run --targetusername installorg --wait 10 --resultformat tap --codecoverage --testlevel $TESTLEVEL
       - run:
           name: Delete Scratch org
           command: |
-            #Delete Scratch Org
+            #Delete scratch org
             sfdx force:org:delete --targetusername installorg --noprompt
