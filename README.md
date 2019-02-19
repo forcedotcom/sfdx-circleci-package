@@ -1,28 +1,26 @@
 # sfdx-circleci-package 
 [![CircleCI](https://circleci.com/gh/forcedotcom/sfdx-circleci-package.svg?style=svg)](https://circleci.com/gh/forcedotcom/sfdx-circleci-package)
 
-Coming Soon --- For a fully guided walk through of setting up and configuring this sample, see the [Continuous Integration Using Salesforce DX](https://trailhead.salesforce.com/modules/sfdx_travis_ci) Trailhead module.
+Coming Soon --- For a fully guided walkthrough of setting up and configuring continuous integration using scratch orgs and Salesforce CLI, see the [Continuous Integration Using Salesforce DX](https://trailhead.salesforce.com/modules/sfdx_travis_ci) Trailhead module.
 
-This repository shows one way you can successfully setup Salesforce DX to create new package versions with Circle CI. We make a few assumptions in this README:
+This repository shows one way you can successfully use Salesforce CLI to create new package versions with CircleCI. We make a few assumptions in this README. Continue only if you have completed these critical configuration prerequisites.
 
-- You know how to get your Github repository setup with Circle CI. (Here's their [Getting Started guide](https://circleci.com/docs/2.0/).)
-- You have properly setup JWT-Based Authorization Flow (i.e. headless). I recommend using [these steps for generating your Self-Signed SSL Certificate](https://devcenter.heroku.com/articles/ssl-certificate-self). 
-
-If any any of these assumptions aren't true, the following steps won't work.
+- You know how to set up your Github repository with CircleCI. (Here's their [Getting Started guide](https://circleci.com/docs/2.0/).)
+- You have properly set up the JWT-based authorization flow (headless). We recommend using [these steps for generating your Self-Signed SSL Certificate](https://devcenter.heroku.com/articles/ssl-certificate-self). 
 
 ## Getting Started
-1) [Fork](http://help.github.com/fork-a-repo/) this repo into your github account using the fork link at the top of the page.
+1) [Fork](http://help.github.com/fork-a-repo/) this repo in to your GitHub account using the fork link at the top of the page.
 
 2) Clone your forked repo locally: `git clone https://github.com/<git_username>/sfdx-circleci-package.git`
 
-3) Make sure you have the Salesforce CLI installed. Check by running `sfdx force --help` and confirm you see the command output. If you don't have it installed, you can download and install it from [here](https://developer.salesforce.com/tools/sfdxcli).
+3) Make sure you have Salesforce CLI installed. Check by running `sfdx force --help` and confirm you see the command output. If you don't have it installed, you can download and install it from [here](https://developer.salesforce.com/tools/sfdxcli).
 
-4) Setup a JWT-based auth flow for the target orgs that you want to deploy to.  This step will create a server.key file that will be used in subsequent steps.
+4) Setup a JWT-based auth flow for the target orgs that you want to deploy to. This step creates a `server.key` file that is used in subsequent steps.
 (https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_jwt_flow.htm)
 
 5) Confirm you can perform a JWT-based auth: `sfdx force:auth:jwt:grant --clientid <your_consumer_key> --jwtkeyfile server.key --username <your_username> --setdefaultdevhubusername`
 
-   **Note:** For more info on setting up JWT-based auth see [Authorize an Org Using the JWT-Based Flow](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_jwt_flow.htm) in the [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev).
+   **Note:** For more info on setting up JWT-based auth, see [Authorize an Org Using the JWT-Based Flow](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_jwt_flow.htm) in the [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev).
 
 6) Encrypt and store the server.key generated above using the instructions below.  IMPORTANT!  You will want to ensure that you do not store the server.key within the project.
 > "Circle does a nice job of allowing you to set environment variables inside the UI in a protected way." (attribution to [Kevin O'Hara](https://github.com/kevinohara80))
