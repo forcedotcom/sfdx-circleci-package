@@ -16,7 +16,7 @@ jobs:
           command: |
             # Create sfdx directory
             mkdir sfdx
-            # Download cli
+            # Download Salesforce CLI
             wget -qO- $DX_CLI_URL | tar xJ -C sfdx --strip-components 1
       - run:
           name: Install CLI
@@ -30,7 +30,7 @@ jobs:
             #Decrypt server key
             openssl enc -nosalt -aes-256-cbc -d -in assets/server.key.enc -out assets/server.key -base64 -K $DECRYPTION_KEY -iv $DECRYPTION_IV
       - run:
-          name: Create Scratch Org
+          name: Create scratch org
           command: |
             sfdx force --help
             #Authorize Dev Hub
@@ -57,7 +57,7 @@ jobs:
             echo 'PackageVersionId - ' ${PACKAGEVERSION}
             # Store PackageVersionId to be used in future step
             echo $PACKAGEVERSION > /tmp/packageversion.txt
-            # Wait for package replication.
+            # Wait for package replication
             echo 'Waiting for 5 minutes for package replication'
             sleep 5m
       - run:
