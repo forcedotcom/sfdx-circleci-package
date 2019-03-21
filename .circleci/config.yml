@@ -1,0 +1,85 @@
+version: 2
+jobs: 
+  build: 
+    docker:
+      - image: circleci/node:8.9.4
+    environment:
+    # from https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_install_cli_standalone.htm
+    # and https://developer.salesforce.com/media/salesforce-cli/manifest.json
+    - DX_CLI_URL: https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+    - PACKAGENAME: "0Ho0N000000CaT8SAK"
+    - TESTLEVEL: RunLocalTests
+    steps: 
+      - checkout
+      - run:
+          name: Download CLI
+          command: |
+            # Create sfdx directory
+            mkdir sfdx
+            # Download Salesforce CLI
+            wget -qO- $DX_CLI_URL | tar xJ -C sfdx --strip-components 1
+      - run:
+          name: Install CLI
+          command: |
+            # Create sfdx cli
+            ./sfdx/install
+            sfdx
+      - run:
+          name: Decrypt server key
+          command: |
+            #Decrypt server key
+            openssl enc -nosalt -aes-256-cbc -d -in assets/server.key.enc -out assets/server.key -base64 -K $DECRYPTION_KEY -iv $DECRYPTION_IV
+      - run:
+          name: Create scratch org
+          command: |
+            sfdx force --help
+            #Authorize Dev Hub
+            sfdx force:auth:jwt:grant --clientid $HUB_CONSUMER_KEY --jwtkeyfile assets/server.key --username $HUB_USER_NAME --setdefaultdevhubusername -a HubOrg
+            #Create scratch org
+            sfdx force:org:create -s -f config/project-scratch-def.json --setdefaultusername --setalias circle_build_$CIRCLE_BUILD_NUM --wait 10 --durationdays 1
+            #Push source to scratch org
+            sfdx force:source:push --targetusername circle_build_$CIRCLE_BUILD_NUM
+      - run:
+          name: Run Apex Tests
+          command: |
+            #Run unit tests on scratch org
+            sfdx force:apex:test:run --targetusername circle_build_$CIRCLE_BUILD_NUM --wait 10 --resultformat tap --codecoverage --testlevel $TESTLEVEL
+      - run:
+          name: Delete Scratch Org
+          command: |
+            #Delete scratch org
+            sfdx force:org:delete --targetusername  circle_build_$CIRCLE_BUILD_NUM --noprompt
+      - run:
+          name: Create Package Version
+          command: |
+            #Create package version
+            PACKAGEVERSION="$(sfdx force:package:version:create --package $PACKAGENAME --installationkeybypass --wait 10 --json --targetdevhubusername HubOrg | jq '.result.SubscriberPackageVersionId' | tr -d '"')"
+            echo 'PackageVersionId - ' ${PACKAGEVERSION}
+            # Store PackageVersionId to be used in future step
+            echo $PACKAGEVERSION > /tmp/packageversion.txt
+            # Wait for package replication
+            echo 'Waiting for 5 minutes for package replication'
+            sleep 5m
+      - run:
+          name: Create Scratch Org for Installing Package Version
+          command: |
+            #Create scratch org
+            sfdx force:org:create --targetdevhubusername HubOrg --setdefaultusername --definitionfile config/project-scratch-def.json --setalias installorg --wait 10 --durationdays 1
+            sfdx force:org:display --targetusername installorg
+      - run:
+          name: Install package in Scratch Org
+          command: |
+            #Get PackageVersionId
+            PackageVersionId=$(</tmp/packageversion.txt)
+            #Install package in scratch org
+            sfdx force:package:install --package $PackageVersionId --wait 10 --targetusername installorg
+      - run:
+          name: Run Unit Tests on Scratch Org
+          command: |
+            #Run unit tests on scratch org
+            sfdx force:apex:test:run --targetusername installorg --wait 10 --resultformat tap --codecoverage --testlevel $TESTLEVEL
+      - run:
+          name: Delete Scratch org
+          command: |
+            #Delete scratch org
+            sfdx force:org:delete --targetusername installorg --noprompt
