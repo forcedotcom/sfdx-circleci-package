@@ -1,7 +1,7 @@
 # sfdx-circleci-package 
 [![CircleCI](https://circleci.com/gh/forcedotcom/sfdx-circleci-package.svg?style=svg)](https://circleci.com/gh/forcedotcom/sfdx-circleci-package)
 
-Coming Soon --- For a fully guided walkthrough of setting up and configuring continuous integration using scratch orgs and Salesforce CLI, see the [Continuous Integration Using Salesforce DX](https://trailhead.salesforce.com/modules/sfdx_travis_ci) Trailhead module.
+For a fully guided walkthrough of setting up and configuring continuous integration using scratch orgs and Salesforce CLI, see the [Continuous Integration Using Salesforce DX](https://trailhead.salesforce.com/modules/sfdx_travis_ci) Trailhead module using Travis CI.
 
 This repository shows one way you can successfully use Salesforce CLI to create new package versions with CircleCI. We make a few assumptions in this README. Continue only if you have completed these critical configuration prerequisites.
 
