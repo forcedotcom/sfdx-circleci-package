@@ -7,8 +7,8 @@
         {
             "path": "force-app/main/default",
             "package": "CircleCI",
-            "versionName": "Circle CI - Winter '19",
-            "versionNumber": "1.0.0.NEXT",
+            "versionName": "ver 0.1",
+            "versionNumber": "0.1.0.NEXT",
             "default": false
         }
     ],
@@ -16,7 +16,7 @@
     "sfdcLoginUrl": "https://login.salesforce.com",
     "sourceApiVersion": "44.0",
     "packageAliases": {
-        "CircleCI": "0Ho0N000000CaT8SAK",
-        "CircleCI@1.0.0-1": "04t0N000001E1myQAC"
+        "CircleCI": "0Ho4J000000k9bSSAQ",
+        "CircleCI@0.1.0-1": "04t4J000000kgttQAA"
     }
 }
