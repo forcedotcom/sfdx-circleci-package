@@ -12,17 +12,28 @@ jobs:
     steps: 
       - checkout
       - run:
-          name: Download CLI
+          name: "Create SFDX Folder" 
           command: |
             # Create sfdx directory
-            mkdir sfdx
-            # Download Salesforce CLI
-            wget -qO- $DX_CLI_URL | tar xJ -C sfdx --strip-components 1
+            mkdir ~/sfdx
+      - run:
+          name: Download CLI
+          command: |
+            # Download cli
+            if [ -z ${DX_CLI_URL_CUSTOM+x} ]
+            then
+              echo "Using latest sfdx build"
+              wget -qO- $DX_CLI_URL | tar xJ -C ~/sfdx --strip-components 1
+            else
+              echo "Using custom sfdx build"
+              wget -qO- $DX_CLI_URL_CUSTOM | tar xJ -C ~/sfdx --strip-components 1
+            fi
       - run:
           name: Install CLI
           command: |
-            # Create sfdx cli
-            ./sfdx/install
+            # Install the cli
+            export PATH=~/sfdx/bin:$PATH
+            echo "export PATH=~/sfdx/bin:$PATH" >> $BASH_ENV
             sfdx
       - run:
           name: Decrypt server key
