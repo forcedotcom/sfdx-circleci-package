@@ -20,7 +20,7 @@ jobs:
           name: Download CLI
           command: |
             # Download cli
-            if [ -z ${DX_CLI_URL_CUSTOM+x} ]
+            if [ -z "$DX_CLI_URL_CUSTOM" ]
             then
               echo "Using latest sfdx build"
               wget -qO- $DX_CLI_URL | tar xJ -C ~/sfdx --strip-components 1
