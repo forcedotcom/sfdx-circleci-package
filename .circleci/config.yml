@@ -2,11 +2,10 @@ version: 2
 jobs: 
   build: 
     docker:
-      - image: circleci/node:8.9.4
+      - image: cimg/node:lts
     environment:
-    # from https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_install_cli_standalone.htm
-    # and https://developer.salesforce.com/media/salesforce-cli/manifest.json
-    - DX_CLI_URL: https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+    # from https://developer.salesforce.com/tools/sfdxcli
+    - DX_CLI_URL: https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-amd64.tar.xz
     - PACKAGENAME: "0Ho0N000000CaT8SAK"
     - TESTLEVEL: RunLocalTests
     steps: 
@@ -37,7 +36,6 @@ jobs:
       - run:
           name: Create scratch org
           command: |
-            sfdx force --help
             #Authorize Dev Hub
             sfdx force:auth:jwt:grant --clientid $HUB_CONSUMER_KEY --jwtkeyfile assets/server.key --username $HUB_USER_NAME --setdefaultdevhubusername -a HubOrg
             #Create scratch org
@@ -62,9 +60,6 @@ jobs:
             echo 'PackageVersionId - ' ${PACKAGEVERSION}
             # Store PackageVersionId to be used in future step
             echo $PACKAGEVERSION > /tmp/packageversion.txt
-            # Wait for package replication
-            echo 'Waiting for 5 minutes for package replication'
-            sleep 5m
       - run:
           name: Create Scratch Org for Installing Package Version
           command: |
@@ -77,7 +72,7 @@ jobs:
             #Get PackageVersionId
             PackageVersionId=$(</tmp/packageversion.txt)
             #Install package in scratch org
-            sfdx force:package:install --package $PackageVersionId --wait 10 --targetusername installorg
+            sfdx force:package:install --package $PackageVersionId --publishwait 5 --wait 10 --targetusername installorg
       - run:
           name: Run Unit Tests on Scratch Org
           command: |
