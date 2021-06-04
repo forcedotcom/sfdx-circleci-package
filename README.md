@@ -66,17 +66,6 @@ Now you're ready to go! When you commit and push a change, your change kicks off
 
 Enjoy!
 
-## Environment Variables
-
-| Env Var                       | Description                                                                                                     |
-| ----------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| HUB_CONSUMER_KEY              | From your JWT-based connected app on Salesforce, retrieve the generated `Consumer Key` from your Dev Hub org.   |
-| HUB_USER_NAME                 | This username is the username that you use to access your Dev Hub.                                              |
-| DECRYPTION_KEY                | `server.key` encryption key.                                                                                    |
-| DECRYPTION_IV                 | `server.key` encryption initialization Vector.                                                                  |
-| DX_CLI_URL_CUSTOM             | By default, the script installs the current version of Salesforce CLI. To install the release candidate, set the DX_CLI_URL_CUSTOM local variable to the appropriate URL.|
-
-
 ## Contributing to the Repository ###
 
 If you find any issues or opportunities for improving this repository, fix them! Feel free to contribute to this project by [forking](http://help.github.com/fork-a-repo/) this repository and making changes to the content. Once you've made your changes, share them back with the community by sending a pull request. See [How to send pull requests](http://help.github.com/send-pull-requests/) for more information about contributing to Github projects.
