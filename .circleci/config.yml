@@ -2,7 +2,7 @@ version: 2
 jobs: 
   build: 
     docker:
-      - image: circleci/node:8.9.4
+      - image: cimg/node:lts
     environment:
     # from https://developer.salesforce.com/tools/sfdxcli
     - DX_CLI_URL: https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
@@ -11,17 +11,23 @@ jobs:
     steps: 
       - checkout
       - run:
+          name: "Create SFDX Folder" 
+          command: |
+            # Create sfdx directory
+            mkdir ~/sfdx
+      - run:
           name: Download CLI
           command: |
             # Create sfdx directory
             mkdir sfdx
             # Download Salesforce CLI
-            wget -qO- $DX_CLI_URL | tar xJ -C sfdx --strip-components 1
+            wget -qO- ${DX_CLI_URL_CUSTOM-$DX_CLI_URL} | tar xJ -C ~/sfdx --strip-components 1
       - run:
           name: Install CLI
           command: |
-            # Create sfdx cli
-            ./sfdx/install
+            # Install the cli
+            export PATH=~/sfdx/bin:$PATH
+            echo "export PATH=~/sfdx/bin:$PATH" >> $BASH_ENV
             sfdx
       - run:
           name: Decrypt server key
